@@ -252,6 +252,14 @@ function make_download_git($name, $type, $download, $download_location) {
   $tmp_path = make_tmp();
   $wc = _get_working_copy_option($download);
   $checkout_after_clone = TRUE;
+    // If URL is private git repo, replace by using CI_JOB_TOKEN
+  if(substr($download['url'], 0, 17) == "git@git.ixiam.com") {
+    $ciJobToken = getenv('CI_JOB_TOKEN');
+    $re = '/git\@git\.ixiam\.com:/m';
+    $subst = "https://gitlab-ci-token:{$ciJobToken}@git.ixiam.com/";
+    $download['url'] = preg_replace($re, $subst, $download['url']);
+  }
+
   // If no download URL specified, assume anonymous clone from git.drupalcode.org.
   $download['url'] = isset($download['url']) ? $download['url'] : "https://git.drupalcode.org/project/$name.git";
   // If no working-copy download URL specified, assume it is the same.
