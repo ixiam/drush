@@ -252,13 +252,23 @@ function make_download_git($name, $type, $download, $download_location) {
   $tmp_path = make_tmp();
   $wc = _get_working_copy_option($download);
   $checkout_after_clone = TRUE;
-    // If URL is private git repo, replace by using CI_JOB_TOKEN
+    // If URL is private git repo, replace by using access tokens
   if(substr($download['url'], 0, 17) == "git@git.ixiam.com") {
-    drush_log(dt('env: @env param: @param.', array('@env' => getenv('CI_JOB_TOKEN'), '@param' => drush_get_option('ci-job-token', FALSE))), LogLevel::OK);
-    #$ciJobToken = getenv('CI_JOB_TOKEN');
-    $ciJobToken = drush_get_option('ci-job-token', FALSE);
+    if(substr($download['url'], 0, 25) == "git@git.ixiam.com:clients") {
+      $token = getenv('CLIENTS_ACCESS_TOKEN');
+      if(empty($token)) {
+        make_error('DOWNLOAD_ERROR', dt('Env variable CLIENTS_ACCESS_TOKEN is not defined.'));
+      }
+    }
+    elseif(substr($download['url'], 0, 21) == "git@git.ixiam.com:dev") {
+      $token = getenv('DEV_ACCESS_TOKEN');
+      if(empty($token)) {
+        make_error('DOWNLOAD_ERROR', dt('Env variable DEV_ACCESS_TOKEN is not defined.'));
+      }
+    }
+
     $re = '/git\@git\.ixiam\.com:/m';
-    $subst = "https://gitlab-ci-token:{$ciJobToken}@git.ixiam.com/";
+    $subst = "https://root:{$token}@git.ixiam.com/";
     $download['url'] = preg_replace($re, $subst, $download['url']);
   }
 
