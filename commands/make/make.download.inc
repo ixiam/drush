@@ -254,7 +254,8 @@ function make_download_git($name, $type, $download, $download_location) {
   $checkout_after_clone = TRUE;
     // If URL is private git repo, replace by using CI_JOB_TOKEN
   if(substr($download['url'], 0, 17) == "git@git.ixiam.com") {
-    $ciJobToken = getenv('CI_JOB_TOKEN');
+    #$ciJobToken = getenv('CI_JOB_TOKEN');
+    $ciJobToken = drush_get_option('ci-job-token', FALSE);
     $re = '/git\@git\.ixiam\.com:/m';
     $subst = "https://gitlab-ci-token:{$ciJobToken}@git.ixiam.com/";
     $download['url'] = preg_replace($re, $subst, $download['url']);

@@ -122,6 +122,10 @@ function make_drush_command() {
       ),
       'includes' => 'A list of makefiles to include at build-time.',
       'overrides' => 'A list of makefiles to that can override values in other makefiles.',
+      'ci-job-token' = array(
+        'description' => 'CI_JOB_TOKEN value.',
+        'example-value' => 'toKenValuE',
+      ),
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
