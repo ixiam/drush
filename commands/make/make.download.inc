@@ -254,6 +254,7 @@ function make_download_git($name, $type, $download, $download_location) {
   $checkout_after_clone = TRUE;
     // If URL is private git repo, replace by using CI_JOB_TOKEN
   if(substr($download['url'], 0, 17) == "git@git.ixiam.com") {
+    drush_log(dt('env: @env param: @param.', array('@env' => getenv('CI_JOB_TOKEN'), '@param' => drush_get_option('ci-job-token', FALSE))), LogLevel::OK);
     #$ciJobToken = getenv('CI_JOB_TOKEN');
     $ciJobToken = drush_get_option('ci-job-token', FALSE);
     $re = '/git\@git\.ixiam\.com:/m';
